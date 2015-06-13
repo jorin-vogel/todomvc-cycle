@@ -16,12 +16,11 @@ function determineFilter(todosData, route) {
 }
 
 function makeModification$(intent) {
-  let clearInputMod$ = intent.clearInput$.map(() => (todosData) => {
-    todosData.input = '';
-    return todosData;
+  let clearInputMod$ = intent.clearInput$.map(() => todosData => {
+    return todosData.set('input', '');
   });
 
-  let insertTodoMod$ = intent.insertTodo$.map((todoTitle) => (todosData) => {
+  let insertTodoMod$ = intent.insertTodo$.map(todoTitle => todosData => {
     let list = todosData.get('list');
     let lastId = list.size ? list.last().get('id') : 0;
 
@@ -43,9 +42,9 @@ function makeModification$(intent) {
     );
   });
 
-  let toggleTodoMod$ = intent.toggleTodo$.map(todoid => todosData => {
+  let toggleTodoMod$ = intent.toggleTodo$.map(todoId => todosData => {
     let todoIndex = todosData.get('list')
-      .findIndex(x => x.get('id') === todoid);
+      .findIndex(x => x.get('id') === todoId);
 
     return todosData.update('list', list =>
       list.update(todoIndex, x => x.set('completed', !x.get('completed')))
@@ -59,9 +58,9 @@ function makeModification$(intent) {
     );
   });
 
-  let deleteTodoMod$ = intent.deleteTodo$.map(todoid => todosData => {
+  let deleteTodoMod$ = intent.deleteTodo$.map(todoId => todosData => {
     return todosData.update('list', list =>
-      list.filter(x => x.get('id') !== todoid)
+      list.filter(x => x.get('id') !== todoId)
     );
   });
 
